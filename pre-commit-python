@@ -1,0 +1,42 @@
+#!/bin/bash
+
+
+set -euo pipefail
+
+if command -v python3 &>/dev/null; then
+    if ! command -v flake8 &>/dev/null; then
+        echo "Installing flake8..."
+        python3 -m ensurepip --user
+        python3 -m pip install flake8 --user
+    fi
+else
+    echo "Python 3 is not installed. Please install Python 3 to use precommit hooks."
+    exit 1      
+fi   
+
+# function to check for keys and passwords
+function check_for_secrets() {
+    if git grep -E 'password|secret|api|key' $(git diff --cached --name-only --diff-filter=ACM); then
+        echo "Bro delete the key or password from the code before committing before you lose your job or get hacked."
+        exit 1
+    fi
+}
+
+
+
+files=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.py$' || true)
+
+if [ -n "$files" ]; then
+    echo "Checking Python files with flake8..."
+    if python3 -m flake8 $files; then
+        echo "PYTHON FILES PASSED FLAKE8 CHECKS ✅"
+        echo "---------------"
+        echo "Checking for secrets in staged files..."
+        check_for_secrets
+    else
+        echo "‼️‼️‼️ Check the above output before committing. Please fix them and stage the changes before committing again. ‼️‼️‼️"
+        exit 1
+    fi
+fi
+
+
