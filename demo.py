@@ -1,8 +1,8 @@
+"""Simple script to add two numbers and print the result."""
 
+A = 1
+B = 2
 
-a = 1
-b = 2
+C = A + B
 
-c = a + b
-
-print("The sum of a and b is:", c)
+print("The sum of a and b is:", C)
