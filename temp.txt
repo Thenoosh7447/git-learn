@@ -1,4 +1,3 @@
 temp file
 password=123
-
-$password=234
+no_pw=234
