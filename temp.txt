@@ -1,0 +1,3 @@
+temp file
+password=123
+no_pw=234
